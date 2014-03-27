@@ -18,28 +18,14 @@ namespace GPSMapFile
         private List<GSA> dataGSA = new List<GSA>();
         private List<RMC> dataRMC = new List<RMC>();
 
-        private const string nLineSpeedHis = "rychleHis";
-        private const string nLineSpeed = "rychle";
-        private const string nLineHeight = "vyska";
-        private const string nLineHeightHis = "vyska His";
-        private const string nLineSat = "Pocet Statelitu";
-        private const string nLineSatHis = "Pocet Statelitu His";
-        private const string nLineTimeHis = "Histogram casu mezi vetami";
-        private const string nLineXYRMC = "Souradnice XY RMC";
-        private const string nLineXYGGA = "Souradnice XY GGA";
-
-
-        private const int rozsahSpeed = 20;
-        private const int rozahVEj = 300;
-        private const int rozahSatani = 10;
-        private const int rozahCas = 2;
+        private const int godIndexShift = 138;
 
         #endregion
 
 
         public Form1()
         {
-            // inicializace grafu
+
             InitializeComponent();
 
         }
@@ -48,7 +34,7 @@ namespace GPSMapFile
 
         private void btnReadGPS_Click(object sender, EventArgs e)
         {
-            string seznamCtenychSouboru = ListFileTerminals();
+            string seznamCtenychSouboru = ListFileTerminalsOpen();
 
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
 
@@ -70,34 +56,36 @@ namespace GPSMapFile
         }
 
 
-        private void button1_Click(object sender, EventArgs e)
+        private void ExportToArray_Click(object sender, EventArgs e)
         {
-            double[] speedData = TakeSpeedFromRMCVector();
-            double[] heightData = TakeHeightFromVectorGGA();
-            double[] satDataArray = TakeNumberSatFromGSAVector();
-            double[] casData = TakeDiferenceBetweenSentence();
+            double[] speedData = TakeGodSpeed(TakeSpeedFromRMCVector(),godIndexShift);
+            double[,] xyData = TakeGodXYRMC(TakeXYRMC(), godIndexShift);
 
-            double[,] xyDataRMC = TakeXYRMC();
-            double[,] xyDataGGA = TakeXYGGA();
+            string[] lines = MakeStrinForJavaScriptArray(xyData,speedData);
 
-            double[,] xyToGM = TakeGodXYRMC(xyDataRMC);
-            string[] lines = MakeStrinForHTMLMark(xyToGM);
-
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            string seznamCtenychSouboru = ListFileTerminals();
-            saveFileDialog1.Filter = seznamCtenychSouboru;
-            saveFileDialog1.RestoreDirectory = true;
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            string seznamCtenychSouboru = ListFileTerminalsSave();
+            saveFileDialog.Filter = seznamCtenychSouboru;
+            saveFileDialog.RestoreDirectory = true;
 
 
-            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 try
                 {
-                    File.WriteAllLines(saveFileDialog1.FileName, lines);
+                    switch (saveFileDialog.FilterIndex)
+                    {
+                        case 1:
+                            File.WriteAllLines(saveFileDialog.FileName + ".js", lines);
+                            break;
+                        default:
+                            File.WriteAllLines(saveFileDialog.FileName + ".txt", lines);
+                            break;
+                    }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error: Pojebalo se to nekde pri nacitani Puvodni error: " + ex.Message);
+                    MessageBox.Show("Error: Pojebalo se to nekde pri ukladani Puvodni error: " + ex.Message);
                 }
             }
         }
@@ -112,24 +100,33 @@ namespace GPSMapFile
             double[,] xyDataRMC = TakeXYRMC();
             double[,] xyDataGGA = TakeXYGGA();
 
-            double[,] xyToGM = TakeGodXYRMC(xyDataRMC);
+            double[,] xyToGM = TakeGodXYRMC(xyDataRMC,godIndexShift);
             string[] lines = MakeStrinForHTML(xyToGM);
 
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            string seznamCtenychSouboru = ListFileTerminals();
-            saveFileDialog1.Filter = seznamCtenychSouboru;
-            saveFileDialog1.RestoreDirectory = true;
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            string seznamCtenychSouboru = ListFileTerminalsSave();
+            saveFileDialog.Filter = seznamCtenychSouboru;
+            saveFileDialog.RestoreDirectory = true;
 
 
-            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 try
                 {
-                    File.WriteAllLines(saveFileDialog1.FileName, lines);
+                    switch (saveFileDialog.FilterIndex)
+                    {
+                        case 1:
+                            File.WriteAllLines(saveFileDialog.FileName + ".js", lines);
+                            break;
+                        default:
+                            File.WriteAllLines(saveFileDialog.FileName + ".txt", lines);
+                            break;
+                    }
+
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error: Pojebalo se to nekde pri nacitani Puvodni error: " + ex.Message);
+                    MessageBox.Show("Error: Pojebalo se to nekde pri ukladdani Puvodni error: " + ex.Message);
                 }
             }
 
@@ -378,17 +375,28 @@ namespace GPSMapFile
             return naseSourad;
         }
 
-        public double[,] TakeGodXYRMC(double[,] inputArr)
+        public double[,] TakeGodXYRMC(double[,] inputArr, int shift)
         {
-            int godIndex = 138;
-            double[,] naseSourad = new double[2, inputArr.GetLength(1) - godIndex];
+            double[,] naseSourad = new double[2, inputArr.GetLength(1) - shift];
 
-            for (int i = 0; i < inputArr.GetLength(1) - godIndex; i++)
+            for (int i = 0; i < inputArr.GetLength(1) - shift; i++)
             {
 
-                naseSourad[0, i] = inputArr[0, i + godIndex];
-                naseSourad[1, i] = inputArr[1, i + godIndex];
+                naseSourad[0, i] = inputArr[0, i + shift];
+                naseSourad[1, i] = inputArr[1, i + shift];
 
+            }
+
+            return naseSourad;
+        }
+
+        public double[] TakeGodSpeed(double[] inputArr, int shift)
+        {
+            double[] naseSourad = new double[inputArr.Length - shift];
+
+            for (int i = 0; i < inputArr.Length - shift; i++)
+            {
+                naseSourad[i] = inputArr[i + shift];
             }
 
             return naseSourad;
@@ -406,23 +414,39 @@ namespace GPSMapFile
             return htmlFile;
         }
 
-        public string[] MakeStrinForHTMLMark(double[,] inputArrXY)
+        public string[] MakeStrinForJavaScriptArray(double[,] inputArrXY)
         {
             string[] htmlFile = new string[inputArrXY.GetLength(1) + 2];//inputArrXY.GetLength(1)+2];
             htmlFile[0] = "var markr = [";
             for (int i = 0; i < inputArrXY.GetLength(1); i++)
             {
-                htmlFile[i + 1] = "[" 
-                    + Convert.ToString(inputArrXY[1, i]).Replace(",", ".") 
-                    + "," 
-                    + Convert.ToString(inputArrXY[0, i]).Replace(",", ".") 
+                htmlFile[i + 1] = "["
+                    + Convert.ToString(inputArrXY[1, i]).Replace(",", ".")
+                    + ","
+                    + Convert.ToString(inputArrXY[0, i]).Replace(",", ".")
                     + "],";
             }
             htmlFile[inputArrXY.GetLength(1) + 1] = "];";//inputArrXY.GetLength(1)+1]; =
             return htmlFile;
         }
 
-
+        public string[] MakeStrinForJavaScriptArray(double[,] inputArrXY, double[] inputSpeedArray)
+        {
+            string[] htmlFile = new string[inputArrXY.GetLength(1) + 2];//inputArrXY.GetLength(1)+2];
+            htmlFile[0] = "var markr = [";
+            for (int i = 0; i < inputArrXY.GetLength(1); i++)
+            {
+                htmlFile[i + 1] = "["
+                    + Convert.ToString(inputArrXY[1, i]).Replace(",", ".")
+                    + ","
+                    + Convert.ToString(inputArrXY[0, i]).Replace(",", ".")
+                    + ","
+                    + Convert.ToString(inputSpeedArray[i]).Replace(",", ".")
+                    + "],";
+            }
+            htmlFile[inputArrXY.GetLength(1) + 1] = "];";//inputArrXY.GetLength(1)+1]; =
+            return htmlFile;
+        }
 
         #endregion
 
@@ -437,7 +461,7 @@ namespace GPSMapFile
             return File.ReadAllLines(route);
         }
 
-        private string ListFileTerminals()
+        private string ListFileTerminalsOpen()
         {
             List<string> cteneTypySouboru = new List<string>();
             cteneTypySouboru.Add("NMEA files (*.nmea)|*.nmea");
@@ -447,6 +471,25 @@ namespace GPSMapFile
             cteneTypySouboru.Add("Textak file (*.TXT)|*.TXT");
             cteneTypySouboru.Add("Html files (*.html*)|*.html*");
             cteneTypySouboru.Add("All files (*.*)|*.*");
+
+            string seznamCtenychSouboru = "";
+
+            for (int i = 0; i < cteneTypySouboru.Count(); i++)
+            {
+                if (i < cteneTypySouboru.Count() - 1)
+                { seznamCtenychSouboru += cteneTypySouboru[i] + "|"; }
+                else
+                { seznamCtenychSouboru += cteneTypySouboru[i]; }
+            }
+
+            return seznamCtenychSouboru;
+
+        }
+        private string ListFileTerminalsSave()
+        {
+            List<string> cteneTypySouboru = new List<string>();
+            cteneTypySouboru.Add("Javascr files (*.js*)|*.js*");
+            cteneTypySouboru.Add("Textak file (*.txt)|*.txt");
 
             string seznamCtenychSouboru = "";
 

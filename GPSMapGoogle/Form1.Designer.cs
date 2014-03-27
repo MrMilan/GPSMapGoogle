@@ -30,7 +30,7 @@
         {
             this.btnReadGPS = new System.Windows.Forms.Button();
             this.Export = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.ExportToArray = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnReadGPS
@@ -53,15 +53,15 @@
             this.Export.UseVisualStyleBackColor = true;
             this.Export.Click += new System.EventHandler(this.Export_Click);
             // 
-            // button1
+            // ExportToArray
             // 
-            this.button1.Location = new System.Drawing.Point(424, 39);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(166, 65);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "Export mark";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.ExportToArray.Location = new System.Drawing.Point(424, 39);
+            this.ExportToArray.Name = "ExportToArray";
+            this.ExportToArray.Size = new System.Drawing.Size(166, 65);
+            this.ExportToArray.TabIndex = 2;
+            this.ExportToArray.Text = "Export Array";
+            this.ExportToArray.UseVisualStyleBackColor = true;
+            this.ExportToArray.Click += new System.EventHandler(this.ExportToArray_Click);
             // 
             // Form1
             // 
@@ -70,7 +70,7 @@
             this.AutoScroll = true;
             this.AutoScrollMinSize = new System.Drawing.Size(1024, 1024);
             this.ClientSize = new System.Drawing.Size(885, 352);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.ExportToArray);
             this.Controls.Add(this.Export);
             this.Controls.Add(this.btnReadGPS);
             this.Name = "Form1";
@@ -83,7 +83,7 @@
 
         private System.Windows.Forms.Button btnReadGPS;
         private System.Windows.Forms.Button Export;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button ExportToArray;
     }
 }
 
