@@ -90,47 +90,6 @@ namespace GPSMapFile
             }
         }
 
-        private void Export_Click(object sender, EventArgs e)
-        {
-            double[] speedData = TakeSpeedFromRMCVector();
-            double[] heightData = TakeHeightFromVectorGGA();
-            double[] satDataArray = TakeNumberSatFromGSAVector();
-            double[] casData = TakeDiferenceBetweenSentence();
-
-            double[,] xyDataRMC = TakeXYRMC();
-            double[,] xyDataGGA = TakeXYGGA();
-
-            double[,] xyToGM = TakeGodXYRMC(xyDataRMC,godIndexShift);
-            string[] lines = MakeStrinForHTML(xyToGM);
-
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            string seznamCtenychSouboru = ListFileTerminalsSave();
-            saveFileDialog.Filter = seznamCtenychSouboru;
-            saveFileDialog.RestoreDirectory = true;
-
-
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                try
-                {
-                    switch (saveFileDialog.FilterIndex)
-                    {
-                        case 1:
-                            File.WriteAllLines(saveFileDialog.FileName + ".js", lines);
-                            break;
-                        default:
-                            File.WriteAllLines(saveFileDialog.FileName + ".txt", lines);
-                            break;
-                    }
-
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error: Pojebalo se to nekde pri ukladdani Puvodni error: " + ex.Message);
-                }
-            }
-
-        }
         #endregion
 
         #region Splitovani a parsovani dat
@@ -396,7 +355,7 @@ namespace GPSMapFile
 
             for (int i = 0; i < inputArr.Length - shift; i++)
             {
-                naseSourad[i] = inputArr[i + shift];
+                naseSourad[i] = (inputArr[i + shift]) * 1.852;
             }
 
             return naseSourad;
@@ -433,7 +392,7 @@ namespace GPSMapFile
         public string[] MakeStrinForJavaScriptArray(double[,] inputArrXY, double[] inputSpeedArray)
         {
             string[] htmlFile = new string[inputArrXY.GetLength(1) + 2];//inputArrXY.GetLength(1)+2];
-            htmlFile[0] = "var markr = [";
+            htmlFile[0] = "var policko = [";
             for (int i = 0; i < inputArrXY.GetLength(1); i++)
             {
                 htmlFile[i + 1] = "["

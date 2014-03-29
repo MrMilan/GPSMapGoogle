@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.btnReadGPS = new System.Windows.Forms.Button();
-            this.Export = new System.Windows.Forms.Button();
             this.ExportToArray = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -42,16 +41,6 @@
             this.btnReadGPS.Text = "Nacti gps";
             this.btnReadGPS.UseVisualStyleBackColor = true;
             this.btnReadGPS.Click += new System.EventHandler(this.btnReadGPS_Click);
-            // 
-            // Export
-            // 
-            this.Export.Location = new System.Drawing.Point(233, 39);
-            this.Export.Name = "Export";
-            this.Export.Size = new System.Drawing.Size(166, 65);
-            this.Export.TabIndex = 2;
-            this.Export.Text = "Export";
-            this.Export.UseVisualStyleBackColor = true;
-            this.Export.Click += new System.EventHandler(this.Export_Click);
             // 
             // ExportToArray
             // 
@@ -67,11 +56,10 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoScroll = true;
-            this.AutoScrollMinSize = new System.Drawing.Size(1024, 1024);
-            this.ClientSize = new System.Drawing.Size(885, 352);
+            this.AutoScrollMinSize = new System.Drawing.Size(879, 374);
+            this.AutoSize = true;
+            this.ClientSize = new System.Drawing.Size(871, 340);
             this.Controls.Add(this.ExportToArray);
-            this.Controls.Add(this.Export);
             this.Controls.Add(this.btnReadGPS);
             this.Name = "Form1";
             this.Text = "Form1";
@@ -82,7 +70,6 @@
         #endregion
 
         private System.Windows.Forms.Button btnReadGPS;
-        private System.Windows.Forms.Button Export;
         private System.Windows.Forms.Button ExportToArray;
     }
 }
