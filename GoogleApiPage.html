@@ -37,21 +37,18 @@ function initialize() {
 function setMarkers(map, arrLocAndSpeed) {
 
   for (var i = 0; i < arrLocAndSpeed.length; i+=100) {
-    var myLatLng = new google.maps.LatLng(arrLocAndSpeed[i][0], arrLocAndSpeed[i][1]);
-    setTimeout(function() {
-                            var marker = new google.maps.Marker({
-                                position: myLatLng,
-                                map: map,
-                                draggable: false,
-                                animation: google.maps.Animation.DROP
-                            });
-                            },
-                i * 2);
+    var myLatLng = new google.maps.LatLng(arrLocAndSpeed[i][0], arrLocAndSpeed[i][1]);;
+    new google.maps.Marker({
+        position: myLatLng,
+        map: map,
+        draggable: false,
+        animation: google.maps.Animation.DROP
+        });
   }
 }
 
 function setPolylines(map, arrLocAndSpeed) {
-    var Colorsa = ["#06ff60", "#00FF00","#00FFFF", "#0000FF","#FF0000","#AA0000"];   //od pomalu svzelena,zelena,sv. modra,modra,cervena,tm.cervena
+    var Colorsa = ["#00FFFF","#00CCFF", "#0099FF","#0000FF","#FF0000","#AA0000"];   //od pomalu svzelena,zelena,sv. modra,modra,cervena,tm.cervena
   for (var i = 0; i < arrLocAndSpeed.length-1; i++) {
         var flightPath = new google.maps.Polyline({
             path: [new google.maps.LatLng(arrLocAndSpeed[i][0], arrLocAndSpeed[i][1]),
