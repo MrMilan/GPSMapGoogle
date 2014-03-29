@@ -60,6 +60,7 @@ namespace GPSMapFile
         {
             double[] speedData = TakeGodSpeed(TakeSpeedFromRMCVector(),godIndexShift);
             double[,] xyData = TakeGodXYRMC(TakeXYRMC(), godIndexShift);
+            DisplayDataSpeed(speedData);
 
             string[] lines = MakeStrinForJavaScriptArray(xyData,speedData);
 
@@ -545,6 +546,18 @@ namespace GPSMapFile
         }
 
         #endregion
+
+        private void DisplayDataSpeed(double[] speed)
+        {
+            //30+(6%(speed[i]))*36
+            tBCol.Text = null;
+            for (int i = 0; i < speed.Length; i+=20)
+            {
+
+                tBCol.Text += speed[i].ToString() + ", " + ((speed[i])%6).ToString() + Environment.NewLine;
+                
+            }
+        }
 
         #endregion
     }
