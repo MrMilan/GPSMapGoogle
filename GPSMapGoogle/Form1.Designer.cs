@@ -30,6 +30,7 @@
         {
             this.btnReadGPS = new System.Windows.Forms.Button();
             this.ExportToArray = new System.Windows.Forms.Button();
+            this.tBCol = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btnReadGPS
@@ -52,18 +53,30 @@
             this.ExportToArray.UseVisualStyleBackColor = true;
             this.ExportToArray.Click += new System.EventHandler(this.ExportToArray_Click);
             // 
+            // tBCol
+            // 
+            this.tBCol.Location = new System.Drawing.Point(56, 153);
+            this.tBCol.Multiline = true;
+            this.tBCol.Name = "tBCol";
+            this.tBCol.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tBCol.Size = new System.Drawing.Size(358, 120);
+            this.tBCol.TabIndex = 3;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.AutoScrollMinSize = new System.Drawing.Size(879, 374);
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(871, 340);
+            this.Controls.Add(this.tBCol);
             this.Controls.Add(this.ExportToArray);
             this.Controls.Add(this.btnReadGPS);
             this.Name = "Form1";
             this.Text = "Form1";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -71,6 +84,7 @@
 
         private System.Windows.Forms.Button btnReadGPS;
         private System.Windows.Forms.Button ExportToArray;
+        private System.Windows.Forms.TextBox tBCol;
     }
 }
 

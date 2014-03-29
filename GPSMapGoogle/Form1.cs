@@ -67,7 +67,7 @@ namespace GPSMapFile
             string seznamCtenychSouboru = ListFileTerminalsSave();
             saveFileDialog.Filter = seznamCtenychSouboru;
             saveFileDialog.RestoreDirectory = true;
-
+            
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {

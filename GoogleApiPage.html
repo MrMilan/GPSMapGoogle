@@ -30,35 +30,37 @@ function initialize() {
   var map = new google.maps.Map(document.getElementById('map-canvas'),
       mapOptions);
 	
-	setMarkers(map, markr);
-	setPolylines(map, markr);
+	setMarkers(map, policko);
+	setPolylines(map, policko);
   
 }
-function setMarkers(map, locations) {
+function setMarkers(map, arrLocAndSpeed) {
 
-  for (var i = 0; i < locations.length; i+=100) {
-    var myLatLng = new google.maps.LatLng(locations[i][0], locations[i][1]);;
+  for (var i = 0; i < arrLocAndSpeed.length; i+=100) {
+    var myLatLng = new google.maps.LatLng(arrLocAndSpeed[i][0], arrLocAndSpeed[i][1]);;
     var marker = new google.maps.Marker({
         position: myLatLng,
-        map: map,
+        map: map
 
     });
   }
 }
 
-function setPolylines(map, locations) {
-var plam = new Array();
-  for (var i = 0; i < locations.length; i++) {
-plam[i] = new google.maps.LatLng(locations[i][0], locations[i][1]);
+function setPolylines(map, arrLocAndSpeed) {
+  for (var i = 0; i < arrLocAndSpeed.length-1; i++) {
+	var col = 30+(6%(arrLocAndSpeed[i][2]))*36;
+        var flightPath = new google.maps.Polyline({
+            path: [new google.maps.LatLng(arrLocAndSpeed[i][0], arrLocAndSpeed[i+1][1]),
+                    new google.maps.LatLng(arrLocAndSpeed[i+1][0], arrLocAndSpeed[i][1])],
+            geodesic: true,
+            strokeColor: "rgb("+ (125).toString()+","+(10).toString()+","+(col).toString()+")",
+            strokeOpacity: 1.0,
+            strokeWeight: 2,
+            map: map
+            });
     }
 	
-	var flightPath = new google.maps.Polyline({
-    path: plam,
-    geodesic: true,
-    strokeColor: '#FF0000',
-    strokeOpacity: 1.0,
-    strokeWeight: 2
-  });
+	
    flightPath.setMap(map);
   }
 
