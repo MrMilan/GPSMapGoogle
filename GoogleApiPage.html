@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
     <head>
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
@@ -14,10 +14,8 @@
         <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
         <script src="arra.js"></script>
         <script>
-    // This example creates a 2-pixel-wide red polyline showing
-    // the path of William Kingsford Smith's first trans-Pacific flight between
-    // Oakland, CA, and Brisbane, Australia.
 
+            var path = [];
             function initialize() {
                 var mapOptions = {
                     zoom: 10,
@@ -36,53 +34,62 @@
             }
             function setMarkers(map, arrLocAndSpeed) {
                 var image = {
-                url: 'srd.png',
-                size: new google.maps.Size(64, 64),
-                origin: new google.maps.Point(0,0),
-                anchor: new google.maps.Point(0, 64)
+                    url: 'srd.png',
+                    size: new google.maps.Size(64, 64),
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(0, 32)
 
 
-              };
+                };
                 for (var i = 0; i < arrLocAndSpeed.length; i += 100) {
-                     setTimeout(function() {
-                        addMarker(map,arrLocAndSpeed,image);
+                    setTimeout(function() {
+                        addMarker(map, arrLocAndSpeed, image);
                     }, i * 2);
 
                 }
             }
-            
+
             var prom = 0;
-            function addMarker(map,arrLocAndSpeed,image)
+            function addMarker(map, arrLocAndSpeed, image)
             {
 
 
-               new google.maps.Marker({
+                new google.maps.Marker({
                     position: new google.maps.LatLng(arrLocAndSpeed[prom][0], arrLocAndSpeed[prom][1]),
                     map: map,
                     draggable: false,
                     animation: google.maps.Animation.DROP,
                     icon: image
                 });
-                    prom+=100;
+                prom += 100;
             }
 
             function setPolylines(map, arrLocAndSpeed) {
-                var Colorsa = ["#00FFFF", "#00CCFF", "#0099FF", "#0000FF", "#FF0000", "#AA0000"]; 
-                //od pomalu svzelena,zelena,sv. modra,modra,cervena,tm.cervena
+
+
                 for (var i = 0; i < arrLocAndSpeed.length - 1; i++) {
-                    var flightPath = new google.maps.Polyline({
-                        path: [new google.maps.LatLng(arrLocAndSpeed[i][0], arrLocAndSpeed[i][1]),
-                            new google.maps.LatLng(arrLocAndSpeed[i + 1][0], arrLocAndSpeed[i + 1][1])],
-                        geodesic: true,
-                        strokeColor: Colorsa[(Math.round((arrLocAndSpeed[i][2]) % 6))],
-                        strokeOpacity: 1.0,
-                        strokeWeight: 2,
-                        map: map
-                    });
+                    setTimeout(function() {
+                        addLine(map, arrLocAndSpeed);
+                    }, i * 2);
                 }
+            }
 
-
-                flightPath.setMap(map);
+            var pom = 0;
+            function addLine(map, arrLocAndSpeed)
+            {
+                var Colorsa = ["#00FFFF", "#00CCFF", "#0099FF", "#0000FF", "#FF0000", "#AA0000"];
+                //od pomalu svzelena,zelena,sv. modra,modra,cervena,tm.cervena
+                path.push(new google.maps.Polyline({
+                    path: [new google.maps.LatLng(arrLocAndSpeed[pom][0], arrLocAndSpeed[pom][1]),
+                        new google.maps.LatLng(arrLocAndSpeed[pom + 1][0], arrLocAndSpeed[pom + 1][1])],
+                    geodesic: true,
+                    strokeColor: Colorsa[(Math.round((arrLocAndSpeed[pom][2]) % 6))],
+                    strokeOpacity: 1.0,
+                    strokeWeight: 2,
+                    map: map
+                }));
+                //flightPath.setMap(map);
+                pom++;
             }
 
             google.maps.event.addDomListener(window, 'load', initialize);
